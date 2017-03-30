@@ -12,7 +12,7 @@ export default class Notebook {
   }
 
   addNote(title, text) {
-    this.notes.push(new Note(title, text));
+    this.notes.unshift(new Note(title, text));
   }
 
   rm(note) {

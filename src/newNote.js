@@ -3,6 +3,7 @@ import { ListView, TouchableOpacity, View, StyleSheet, TextInput, Dimensions, La
 import { Container, Content, Card, CardItem, Text, Body, Header, Title, Button, Left, Right, Icon,  } from 'native-base';
 import Notebook from './notebook';
 import AutoExpandingTextInput from 'react-native-auto-expanding-textinput';
+import Br from './break';
 
 export default class NewNote extends Component {
   constructor(props) {
@@ -60,10 +61,7 @@ export default class NewNote extends Component {
             maxHeight={screenHeight - 25}
             onChangeText={(titleText) => this.setState({titleText})}
             onChangeHeight={this._onChangeHeight}/>
-            <View style={{
-              flex: 1,
-              height: StyleSheet.hairlineWidth,
-              backgroundColor: '#8E8E8E'}} />
+            <Br/>
             <AutoExpandingTextInput
             style={{
               fontSize: 20

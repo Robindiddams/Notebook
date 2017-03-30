@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation } from 'react-native';
+import { ListView, ScrollView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation, StyleSheet } from 'react-native';
 import {
   Container,
   Content,
@@ -21,6 +21,8 @@ import {
 import NewNote from './newNote';
 import Notebook from './notebook';
 import Swipeout from 'react-native-swipe-out';
+import AutoExpandingTextInput from 'react-native-auto-expanding-textinput';
+import Br from './break';
 
 let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -29,7 +31,9 @@ export default class NotebookView extends Component {
     super(props);
     this.state = {
       dataSource: ds.cloneWithRows(this.props.notebook.notes),
-      search: ''
+      search: '',
+      titleText: '',
+      bodyText: ''
     };
 
   }
@@ -41,6 +45,21 @@ export default class NotebookView extends Component {
   }
   componentWillUpdate(){
     // LayoutAnimation.spring();
+    LayoutAnimation.configureNext({
+      duration: 100,
+      create: {
+        type: 'linear',
+        property: 'opacity',
+      },
+      update: {
+        type: 'linear',
+      },
+      delete: {
+        type: 'linear',
+        property: 'opacity',
+      },
+    });
+
 
   }
 
@@ -51,6 +70,7 @@ export default class NotebookView extends Component {
   }
 
   showNoteDialogue(){
+    this.listView.scrollTo({x: 0, y: 0, animated: true})
     this.setState({makeNote: true});
   }
 
@@ -88,10 +108,6 @@ export default class NotebookView extends Component {
               <Body>
                 <Text>{note.text}</Text>
               </Body>
-              <TouchableOpacity onPress={() => {
-                console.log('hello');
-              }}>
-              </TouchableOpacity>
             </Content>
           </CardItem>
         </Card>
@@ -111,7 +127,12 @@ export default class NotebookView extends Component {
 
     return (
       <Container>
-          {this.state.makeNote ? <NewNote closeNewNote={this.closeNewNote.bind(this)}/> : null}
+
+      {/*
+        The header
+          2 buttons and a title
+      */}
+
         <Header>
           <Left>
             <Button transparent onPress={() => {this.props.setPage('home')}}>
@@ -127,7 +148,20 @@ export default class NotebookView extends Component {
             </Button>
           </Right>
         </Header>
+
+
+        {/*
+          The Body
+            Search bar, new note dialogue, list view, new note button
+        */}
+
         <Content>
+
+
+          {/*
+            Search Bar
+          */}
+
           <View style={{
             padding: 5,
             paddingBottom: 0
@@ -155,21 +189,82 @@ export default class NotebookView extends Component {
               onChangeText={(text) => {
                 this.setState({search: text});
                 this.setState({dataSource: ds.cloneWithRows(this.props.notebook.search(text))})
-                // <Button transparent onPress={() => {
-                //   this.setState({search: ''})
-                //   this.setState({dataSource: ds.cloneWithRows(this.props.notebook.notes)})
-                // }}>
-                // <Icon active name="ios-close-circle-outline" />
-                // </Button>
               }}/>
             </View>
           </View>
 
+
+          {/*
+            New Note Creation area
+          */}
+
+          {this.state.makeNote ? <View style={{
+            shadowOffset: {
+              width: 0,
+              height: 3
+            },
+            shadowOpacity: 0.5,
+            padding: 10
+          }}>
+            <View style={{ backgroundColor:'#ffffff'}}>
+              <View style={{flex:1, flexDirection: 'row', paddingLeft: 10, paddingRight: 10, justifyContent:'space-between'}}>
+                <TouchableOpacity onPress={() => {this.setState({makeNote: false})}}>
+                  <Icon name='ios-close-outline' style={styles.newNoteIcon}/>
+                </TouchableOpacity>
+                <Text style={{paddingTop: 5}}>Oh boy a new note</Text>
+                <TouchableOpacity onPress={() => {
+                  this.setState({makeNote: false});
+                  this.addNote(this.state.titleText, this.state.bodyText);
+                }}>
+                  <Icon name='ios-checkmark-outline' style={styles.newNoteIcon}/>
+                </TouchableOpacity>
+              </View>
+              <Br/>
+              <View style={{paddingLeft: 10, paddingRight: 10}}>
+                <TextInput
+                  style={{
+                    fontSize: 20,
+                    height: 40
+                  }}
+                  placeholder="My Note"
+                  onSubmitEditing={() => {console.log('does this work?')}}
+                  returnKeyType="done"
+                  onChangeText={(titleText) => this.setState({titleText})}/>
+                <Br/>
+                <AutoExpandingTextInput
+                  style={{
+                    fontSize: 20,
+                    paddingLeft: 0
+                  }}
+                  onSubmitEditing={() => {console.log('how about this?')}}
+                  onChangeText={(bodyText) => this.setState({bodyText})}
+                  placeholder='what am I about?'
+                  enablesReturnKeyAutomatically={true}
+                  returnKeyType='done'
+                  minHeight={40}
+                  maxHeight={screenHeight - 25}
+                  onChangeHeight={() => {console.log('height changed')}}/>
+              </View>
+            </View>
+          </View> : null}
+
+
+          {/*
+            List View
+          */}
+
           <ListView
+            ref={ref => this.listView = ref}
             enableEmptySections={true}
             dataSource={this.state.dataSource}
             renderRow={this.renderRows.bind(this)}
           />
+
+
+          {/*
+            "new note" button
+          */}
+
           <Body>
             <Button transparent onPress={() => {
               console.log('do newcard');
@@ -179,6 +274,13 @@ export default class NotebookView extends Component {
             </Button>
           </Body>
         </Content>
+
+
+        {/*
+          Footer
+            deckswiper button and new note button
+        */}
+
         <Footer>
         <Left>
         <Button transparent onPress={() => {
@@ -203,12 +305,12 @@ export default class NotebookView extends Component {
 const {height: screenHeight} = Dimensions.get('window')
 const {width: screenWidth} = Dimensions.get('window')
 const styles = {
+  //button color '#007AFF'
     search: {
       flex: 1,
       backgroundColor: '#ffffff',
       padding: 3,
       paddingBottom: 0
-
     },
     searchBar: {
       backgroundColor: '#F5F5F5',
@@ -223,4 +325,7 @@ const styles = {
       // paddingTop: 3,
       backgroundColor: 'transparent'
     },
+    newNoteIcon: {
+      color: '#007AFF'
+    }
 };
