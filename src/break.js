@@ -10,7 +10,6 @@ export default class Br extends Component {
   render() {
     return(
       <View style={{
-        flex: 1,
         height: StyleSheet.hairlineWidth,
         backgroundColor: '#8E8E8E'}} />
     );

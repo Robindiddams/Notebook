@@ -32,8 +32,10 @@ export default class App extends Component {
     this.state.notebooks[0].addNote('note2', 'note 2\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
+    this.state.notebooks[0].addNote('a', 'note 3\'s text');
+    this.state.notebooks[0].addNote('as', 'note 3\'s text');
+    this.state.notebooks[0].addNote('asd', 'note 3\'s text');
+    this.state.notebooks[0].addNote('asdf', 'note 3\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
