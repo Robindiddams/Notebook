@@ -7,7 +7,7 @@ const styles = {
   title: {
     fontWeight:'bold',
   },
-  bigRitle: {
+  bigTitle: {
     fontWeight:'bold',
     fontSize:20
   },

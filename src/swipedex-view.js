@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, TextInput, TouchableOpacity, Text, Dimensions, LayoutAnimation } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from './header';
 import styles from './styles';
@@ -7,48 +7,55 @@ import Br from './break.js'
 import AutoExpandingTextInput from 'react-native-auto-expanding-textinput';
 import SwipeCards from 'react-native-swipe-cards';
 import Note from './card';
+import FlipCard from './flipcard'
 
 export default class SwipeDex extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      cards: this.props.notebook.notes
+      cards: this.props.notebook.notes,
+      nextDeck: []
     }
-    console.log(this.state.cards);
     // this.setState({cards:this.props.notebook.cards})
   }
 
   handleYup (card) {
-   console.log(`Yup for ${card.text}`)
+
   }
   handleNope (card) {
-   console.log(`Nope for ${card.text}`)
+    this.state.nextDeck.push(card);
+  //  console.log(`Nope for ${card.text}`)
   }
   handleMaybe (card) {
-   console.log(`Maybe for ${card.text}`)
+  //  console.log(`Maybe for ${card.text}`)
+  }
+
+  noMoreCards() {
+    LayoutAnimation.configureNext({
+      duration: 100,
+      create: {
+        type: 'linear',
+        property: 'opacity',
+      },
+      update: {
+        type: 'linear',
+      },
+      delete: {
+        type: 'linear',
+        property: 'opacity',
+      },
+    });
+    return(
+      <View style={{height:300, width:300, flex:1, justifyContent:'center', alignItems: 'center'}}>
+        <Text>no more cards</Text>
+      </View>
+    );
   }
 
   renderCards (cardData) {
-
-    // return(
-    //   <View style={{
-    //     flex: 1,
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     width: 300,
-    //     height: 300,
-    //     backgroundColor:'#000000'
-    //   }}>
-    //   <Text>cardData.title</Text>
-    //   </View>
-    // );
     return(
-      <Note style={{height: 200, width: 200}}>
-      <Text style={styles.title}>{cardData.title}</Text>
-      <Br/>
-      <Text>{cardData.text}</Text>
-      </Note>
+      <FlipCard front={cardData.title} back={cardData.text}/>
     );
   }
 
@@ -72,14 +79,20 @@ export default class SwipeDex extends Component {
             </TouchableOpacity>
           </Header>
           <SwipeCards
+            ref={'swipecards'}
             cards={this.state.cards}
             renderCard={this.renderCards}
-            renderNoMoreCards={() => <View><Text>no more cards</Text></View>}
-
-            handleYup={this.handleYup}
-            handleNope={this.handleNope}
+            renderNoMoreCards={() => this.noMoreCards()}
+            yupText='I know this!'
+            nopeText='I dont know this'
+            handleYup={() => this.handleYup()}
+            handleNope={() => this.handleNope()}
             handleMaybe={this.handleMaybe}
-            hasMaybeAction
+            loop={false}
+            onLoop={()=>{
+              //figure this out
+              // this.setState({cards:this.refs.swipecards.props.cards});
+            }}
           />
 
         </View>
