@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import styles from './styles'
-export default class Header extends Component {
+export default class Footer extends Component {
   constructor(props) {
     super(props)
   }

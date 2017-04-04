@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, Dimensions } from 'react-native';
-import { Icon } from 'native-base';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Header from './header';
 import styles from './styles';
 import Br from './break.js'
@@ -31,7 +31,7 @@ export default class NewNoteView extends Component {
         <View>
           <Header>
             <TouchableOpacity onPress={this.finishNote.bind(this)}>
-              <Icon name='arrow-back' style={styles.newNoteIcon}/>
+              <Icon name='ios-arrow-back-outline' style={styles.newNoteIcon}/>
             </TouchableOpacity>
             <Text style={styles.title}>oh boy a new note</Text>
             <TouchableOpacity  onPress={() => {

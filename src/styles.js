@@ -7,6 +7,10 @@ const styles = {
   title: {
     fontWeight:'bold',
   },
+  bigRitle: {
+    fontWeight:'bold',
+    fontSize:20
+  },
   search: {
     flex: 1,
     backgroundColor: '#ffffff',
@@ -27,7 +31,8 @@ const styles = {
     backgroundColor: 'transparent'
   },
   newNoteIcon: {
-    color: '#007AFF'
+    color: '#007AFF',
+    fontSize:28
   }
 };
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, TouchableOpacity, View, StyleSheet, TextInput, Dimensions, LayoutAnimation } from 'react-native';
+import { ListView, TouchableOpacity, View, StyleSheet, TextInput, Dimensions } from 'react-native';
 import Notebook from './notebook';
 import AutoExpandingTextInput from 'react-native-auto-expanding-textinput';
 import Br from './break';
@@ -14,10 +14,6 @@ export default class Note extends Component {
     }
   }
 
-  componentWillMount() {
-    LayoutAnimation.spring();
-  }
-
 
   _onChangeHeight(before, after) {
     console.log('before: ' + before + ' after: ' + after);
@@ -26,7 +22,7 @@ export default class Note extends Component {
 
   render() {
       return(
-        <View style={{
+        <View style={[{
           backgroundColor: 'transparent',
           paddingTop: 4,
           paddingBottom: 8,
@@ -37,7 +33,7 @@ export default class Note extends Component {
             height: 3
           },
           shadowOpacity: 0.3
-        }}>
+        }, this.props.style]}>
           <View style={{
 
             flex: 1,

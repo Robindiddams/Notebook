@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { ListView, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Container, Content, Card, CardItem, Text, Body, Header, Title, Button, Left, Right, Icon } from 'native-base';
+import { ListView, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Notebook from './notebook';
+import Header from './header';
 import NotebookView from './notebook-view';
+import styles from './styles';
+import SwipeDex from './swipedex-view';
+
 
 export default class App extends Component {
   constructor(props) {
@@ -18,7 +22,6 @@ export default class App extends Component {
       viewingNoteBook: null
     };
 
-
     //TODO: save and load notebooks from local storage
 
     //create some notebooks
@@ -31,20 +34,10 @@ export default class App extends Component {
     this.state.notebooks[0].addNote('note1', 'note 1\'s text');
     this.state.notebooks[0].addNote('note2', 'note 2\'s text');
     this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
     this.state.notebooks[0].addNote('a', 'note 3\'s text');
     this.state.notebooks[0].addNote('as', 'note 3\'s text');
     this.state.notebooks[0].addNote('asd', 'note 3\'s text');
     this.state.notebooks[0].addNote('asdf', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
-    this.state.notebooks[0].addNote('note3', 'note 3\'s text');
 
   }
 
@@ -72,29 +65,18 @@ export default class App extends Component {
 
   renderRows(notebook) {
     return(
-      <View style={{flex:1, flexDirection:'row'}}>
-              <Title style={{padding:10, paddingTop:15}}>{notebook.name}</Title>
-              <Right>
-              <TouchableOpacity style={{flex:1, padding: 10}} onPress={() => {
-                this.setState({viewingNoteBook: notebook});
-                this.setPage('notebook');
-              }}>
-                <View style={{backgroundColor:'transparent'}}>
-                  <Icon name="arrow-forward" style={{color:'#007AFF'}}/>
-                </View>
-              </TouchableOpacity>
-              </Right>
+      <View style={{flex:1, flexDirection:'row', justifyContent: 'space-between'}}>
+        <Text style={{padding:10, paddingTop:15}}>{notebook.name}</Text>
+        <TouchableOpacity style={{padding: 10}} onPress={() => {
+          this.setState({viewingNoteBook: notebook});
+          this.setPage('notebook');
+        }}>
+          <Icon name="ios-arrow-forward-outline" style={styles.newNoteIcon}/>
+        </TouchableOpacity>
       </View>
     );
   }
 
-  aStraightFlatLine() {
-    return(
-      <View>
-
-      </View>
-    );
-  }
 
   setPage(page) {
     this.setState({page: page});
@@ -103,11 +85,9 @@ export default class App extends Component {
   render() {
     if (this.state.page == 'home') {
       return (
-        <Container>
-          <Header>
-            <Body>
-              <Title>{this.state.header.title}</Title>
-            </Body>
+        <View>
+          <Header style={{justifyContent:'center'}}>
+            <Text>{this.state.header.title}</Text>
           </Header>
           <ListView
             enableEmptySections={true}
@@ -118,21 +98,15 @@ export default class App extends Component {
               height: StyleSheet.hairlineWidth,
               backgroundColor: '#8E8E8E'}} />}
           />
-        </Container>
+        </View>
       );
     } else if (this.state.page == 'notebook') {
       return (
-        <Container>
           <NotebookView setPage={this.setPage.bind(this)} notebook={this.state.viewingNoteBook}/>
-        </Container>
       );
-    } else {
+    } else if (this.state.page == 'swipedex') {
       return (
-        <Container>
-          <Body>
-            <Title>THIS IS AN ERROR</Title>
-          </Body>
-        </Container>
+        <SwipeDex setPage={this.setPage.bind(this)} notebook={this.state.viewingNoteBook} />
       );
     }
   }
