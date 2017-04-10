@@ -30,14 +30,14 @@ export default class NewNoteView extends Component {
       return(
         <View>
           <Header>
-            <TouchableOpacity onPress={this.finishNote.bind(this)}>
+            <TouchableOpacity style={{paddingRight:10}} onPress={this.finishNote.bind(this)}>
               <Icon name='ios-arrow-back-outline' style={styles.icon}/>
             </TouchableOpacity>
-            <Text style={styles.title}>oh boy a new note</Text>
+            <Text style={styles.headerTitle}>oh boy a new note</Text>
             <TouchableOpacity  onPress={() => {
               this.props.close();
             }}>
-              <Icon name='md-close' style={styles.icon} />
+              <Icon name='ios-menu-outline' style={styles.icon} />
             </TouchableOpacity>
           </Header>
           <View style={{

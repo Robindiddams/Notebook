@@ -27,7 +27,9 @@ export default class SwipeDex extends Component {
       original: [],
       cards: [],
       nextDeck: [],
-      carding: false
+      carding: false,
+      go:true,
+      reset:true
     }
     // this.setState({cards:this.props.notebook.cards})
   }
@@ -61,17 +63,23 @@ export default class SwipeDex extends Component {
     }
   }
 
-  handleYup (card) {
+  updateTheButtons() {
+    if(this.state.nextDeck.length === 0) {
+      console.log('nextDeck',this.refs);
+      this.setState({go:false});
+    } else {
+      this.setState({go:true});
 
+    }
   }
+
+  handleYup (card) {
+  }
+
   handleNope (card) {
-    console.log(card);
     this.state.nextDeck.push(card);
-  //  console.log(`Nope for ${card.text}`)
   }
-  handleMaybe (card) {
-  //  console.log(`Maybe for ${card.text}`)
-  }
+
 
   noMoreCards() {
     LayoutAnimation.configureNext({
@@ -113,7 +121,7 @@ export default class SwipeDex extends Component {
             }}>
               <Icon name='ios-arrow-back-outline' style={styles.iconBigger}/>
             </TouchableOpacity>
-            <Text style={[styles.headerTitle, {paddingLeft:10}]}>its the swipedex</Text>
+            <Text style={[styles.headerTitle, {paddingLeft:10}]}>its time to flash</Text>
             <TouchableOpacity  onPress={() => {
               console.log('thing');
             }}>
@@ -145,6 +153,7 @@ export default class SwipeDex extends Component {
                 }}
                 cardRemoved={card => {
                   if (card === this.state.cards.length - 1) {
+                    this.updateTheButtons();
                     this.setState({cards:this.shuffle(this.state.nextDeck)});
                     this.setState({nextDeck:[]});
                     this.setState({carding: false});
@@ -166,16 +175,19 @@ export default class SwipeDex extends Component {
                       justifyContent: 'space-between'
                     }}>
                       <TouchableOpacity style={styles.bubbleButton} onPress={() => {
-                        this.setState({carding:true})
+                        if (this.state.go) {
+                          this.setState({carding:true})
+                        }
                       }}>
-                        <Text style={{color:styles.buttonColor}}>Yes! Lets Go!</Text>
+                        <Text  style={{color:styles.buttonColor}}>Yes! Lets Go!</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={styles.bubbleButton} onPress={() => {
-                        this.setState({cards: this.shuffle(this.state.original)})
-                        console.log('hello?');
-                        this.setState({carding:true})
+                        if (this.state.reset) {
+                          this.setState({cards: this.shuffle(this.state.original)})
+                          this.setState({carding:true})
+                        }
                       }}>
-                        <Text style={{color:styles.buttonColor}}>Reset the deck</Text>
+                        <Text  style={{color:styles.buttonColor}}>Reset the deck</Text>
                       </TouchableOpacity>
                     </View>
               </View>

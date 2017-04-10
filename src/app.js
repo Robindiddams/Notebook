@@ -163,7 +163,7 @@ export default class App extends Component {
               <Icon name="ios-refresh" style={styles.iconBigger}/>
             </TouchableOpacity>
             */}
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity style={{paddingLeft:10, paddingRight:10}} onPress={() => {
               console.log('new');
               AlertIOS.prompt(
                 'Enter a value',
