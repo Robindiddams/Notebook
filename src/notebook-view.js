@@ -145,6 +145,7 @@ export default class NotebookView extends Component {
     return (
       <Drawer
         ref={(ref) => this._drawer = ref}
+        tweenDuration={150}
         content={
           this.state.drawer === 'newNote' ? <NewNote close={this.closeDrawer.bind(this)} submit={this.addNote.bind(this)}/> :
           <SwipeDex close={this.closeDrawer.bind(this)} notebook={this.props.notebook} />
@@ -188,7 +189,6 @@ export default class NotebookView extends Component {
           <TextInput placeholder={searchStr}
             style={{
               flex:1,
-              // height:10,
               paddingLeft:5
             }}
             clearButtonMode='always'
@@ -229,7 +229,6 @@ export default class NotebookView extends Component {
           <TouchableOpacity  onPress={() => {
             console.log('do flashcards');
             this.showSwipedex();
-            // this.props.setPage('swipedex');
           }}>
             <Icon name="ios-photos-outline" style={styles.icon}/>
           </TouchableOpacity>

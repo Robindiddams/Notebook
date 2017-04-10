@@ -16,12 +16,9 @@ export default class SwipeDex extends Component {
 
     // this.notebook = new Notebook(this.props.notebook);
     AsyncStorage.getItem(`@Notebook:notebook-${this.props.notebook}`).then(item => {
-      console.log(item);
       notebook = JSON.parse(item);
-      console.log(notebook.notes);
       this.setState({original:notebook.notes, cards: this.shuffle(notebook.notes)});
-      console.log(this.state);
-    }).catch(e => console.log(e))
+    }).catch(e => console.log(e));
 
     this.state = {
       original: [],
@@ -69,7 +66,6 @@ export default class SwipeDex extends Component {
       this.setState({go:false});
     } else {
       this.setState({go:true});
-
     }
   }
 
@@ -139,7 +135,7 @@ export default class SwipeDex extends Component {
                 renderCard={(card) => this.renderCards(card)}
                 renderNoMoreCards={() => this.noMoreCards()}
                 yupText='I know this!'
-                nopeText='I dont know this'
+                nopeText='show me this again'
                 handleYup={() => this.handleYup()}
                 handleNope={(card) => this.handleNope(card)}
                 handleMaybe={this.handleMaybe}
@@ -174,13 +170,17 @@ export default class SwipeDex extends Component {
                       flexDirection: 'row',
                       justifyContent: 'space-between'
                     }}>
+                    {this.state.go ?
                       <TouchableOpacity style={styles.bubbleButton} onPress={() => {
                         if (this.state.go) {
                           this.setState({carding:true})
                         }
                       }}>
                         <Text  style={{color:styles.buttonColor}}>Yes! Lets Go!</Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity> : <View style={styles.bubbleButton}>
+                        <Text  style={{color:'#F5F5F5'}}>Yes! Lets Go!</Text>
+                      </View>
+                    }
                       <TouchableOpacity style={styles.bubbleButton} onPress={() => {
                         if (this.state.reset) {
                           this.setState({cards: this.shuffle(this.state.original)})
