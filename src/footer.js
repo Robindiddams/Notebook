@@ -10,7 +10,7 @@ export default class Footer extends Component {
   render() {
       return(
         <View style={{height:50, backgroundColor: '#F5F5F5'}}>
-          <View style={{flex:1,
+          <View style={[ {flex:1,
               flexDirection: 'row',
               paddingTop:10,
               paddingLeft: 10,
@@ -18,7 +18,7 @@ export default class Footer extends Component {
               justifyContent:'space-between',
               borderTopColor: '#bbb',
               borderTopWidth: StyleSheet.hairlineWidth
-            }}>
+            }, this.props.style]}>
             {this.props.children}
           </View>
         </View>

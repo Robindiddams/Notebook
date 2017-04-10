@@ -11,6 +11,9 @@ const styles = {
     fontWeight:'bold',
     fontSize:20
   },
+  headerTitle: {
+    fontSize:20
+  },
   search: {
     flex: 1,
     backgroundColor: '#ffffff',
@@ -25,20 +28,40 @@ const styles = {
   },
   searchIcon: {
     fontSize: 20,
-    // padding: 0,
-    // paddingLeft: 10,
-    // paddingTop: 3,
     backgroundColor: 'transparent'
   },
-  newNoteIcon: {
+  icon: {
     color: btColor,
-    fontSize:28
+    fontSize:28,
+    paddingLeft: 5,
+    paddingRight: 5
+  },
+  iconBigger: {
+    color: btColor,
+    fontSize:31,
+    paddingLeft: 5,
+    paddingRight: 5
   },
   bubbleButton: {
-    borderColor:btColor,
+    justifyContent:'center',
+    // borderColor:btColor,
+    borderColor:'transparent',
+    // backgroundColor:btColor,
     borderWidth: 2,
-    borderRadius: 6,
+    borderRadius: 15,
+    height: 50,
     padding: 5
+  },
+  swipedexMenu: {
+    top:100,
+    height:150,
+    width:300,
+    padding:20,
+    shadowOffset: {
+      width: 0,
+      height: 3
+    },
+    shadowOpacity: 0.3
   }
 };
 

@@ -138,9 +138,6 @@ export default class NotebookView extends Component {
 
   }
 
-
-
-
   render() {
 
     let searchStr = 'Search ' + this.masternotebook.name
@@ -162,11 +159,11 @@ export default class NotebookView extends Component {
 
         <Header>
           <TouchableOpacity  onPress={() => {this.props.setPage('home')}}>
-            <Icon name='ios-arrow-back-outline' style={styles.newNoteIcon}/>
+            <Icon name='ios-arrow-back-outline' style={styles.iconBigger}/>
           </TouchableOpacity>
-          <Text>{this.masternotebook.name}</Text>
+          <Text style={[styles.headerTitle, {paddingLeft:10}]}>{this.masternotebook.name}</Text>
           <TouchableOpacity onPress={() => {console.log('menu')}}>
-            <Icon name='ios-menu-outline' style={styles.newNoteIcon} />
+            <Icon name='ios-menu-outline' style={styles.icon} />
           </TouchableOpacity>
         </Header>
 
@@ -234,13 +231,13 @@ export default class NotebookView extends Component {
             this.showSwipedex();
             // this.props.setPage('swipedex');
           }}>
-            <Icon name="ios-photos-outline" style={styles.newNoteIcon}/>
+            <Icon name="ios-photos-outline" style={styles.icon}/>
           </TouchableOpacity>
           <TouchableOpacity ref='beans'   onPress={() => {
             console.log('new');
             this.showNoteDialogue();
             }}>
-          <Icon name="ios-create-outline" style={styles.newNoteIcon} />
+          <Icon name="ios-create-outline" style={styles.icon} />
           </TouchableOpacity>
         </Footer>
       </Drawer>
