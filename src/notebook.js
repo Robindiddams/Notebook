@@ -20,12 +20,27 @@ export default class Notebook {
     this.notes.splice(i, 1);
   }
 
+  importNotebook(notebook) {
+    console.log(notebook);
+    this.notes = notebook.notes;
+    this.name = notebook.name;
+    console.log('IMPORTED:', this.notes, this.name);
+  }
+  exportNotebook() {
+    notebook = {
+      notes: this.notes,
+      name: this.name
+    }
+    return notebook;
+  }
+
   search(query) {
     matches = [];
+    query = query.toLowerCase()
     this.notes.forEach((note) => {
-      if(note.title.indexOf(query) != -1)
+      if(note.title.toLowerCase().indexOf(query) != -1)
         matches.push(note);
-      else if (note.text.indexOf(query) != -1)
+      else if (note.text.toLowerCase().indexOf(query) != -1)
         matches.push(note);
     });
     return(matches);

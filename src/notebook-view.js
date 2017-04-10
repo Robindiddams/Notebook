@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, ScrollView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation, StyleSheet, Text } from 'react-native';
+import { ListView, ScrollView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation, StyleSheet, Text, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Note from './card';
 import Notebook from './notebook';
@@ -11,6 +11,7 @@ import Header from './header';
 import Footer from './footer'
 import NewNote from './newNote-view';
 import styles from './styles';
+import SwipeDex from './swipedex-view';
 // console.log(styless);
 
 let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -18,21 +19,38 @@ let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 export default class NotebookView extends Component {
   constructor(props) {
     super(props);
+
+    //create a notebook object from the notebook data
+    this.masternotebook = new Notebook(this.props.notebook);
+    AsyncStorage.getItem(`@Notebook:notebook-${this.props.notebook}`).then(notebook => {
+      if (!notebook) {
+        AsyncStorage.setItem(`@Notebook:notebook-${this.props.notebook}`, JSON.stringify(this.masternotebook.exportNotebook())).then(() => {
+          console.log(this.props.notebook, 'not found, created it');
+        });
+      } else {
+        console.log('importing', notebook);
+        notebook = JSON.parse(notebook)
+        this.masternotebook.importNotebook(notebook);
+        this.setState({dataSource: ds.cloneWithRows(this.masternotebook.notes)});
+
+      }
+    }).catch(e => {console.log(e);});
+
     this.state = {
-      dataSource: ds.cloneWithRows(this.props.notebook.notes),
+      dataSource: ds.cloneWithRows(this.masternotebook.notes),
       search: '',
       titleText: '',
       bodyText: '',
-      makeNote: false
+      makeNote: false,
+      drawer: 'newNote'
     };
-
   }
 
   componentWillMount() {
-    console.log('Hello');
-
-    // this.setState({dataSource: this.state.dataSource.cloneWithRows(this.props.notebook.notes)})
+    console.log('mounted', this.masternotebook);
   }
+
+
   componentWillUpdate(){
     // LayoutAnimation.spring();
     LayoutAnimation.configureNext({
@@ -54,32 +72,44 @@ export default class NotebookView extends Component {
   }
   componentWillUnmount () {
     console.log('unmounting');
+    this.saveNotebook();
+  }
+
+  saveNotebook() {
+    AsyncStorage.setItem(`@Notebook:notebook-${this.props.notebook}`, JSON.stringify(this.masternotebook.exportNotebook())).then(() => {
+      console.log('done');
+    });
   }
 
   deleteNote(note) {
-    this.props.notebook.rm(note);
-    // this.setState({dataSource: this.state.dataSource.cloneWithRows(this.props.notebook.notes)})
-    this.setState({dataSource: ds.cloneWithRows(this.props.notebook.notes)});
+    this.masternotebook.rm(note);
+    this.setState({dataSource: ds.cloneWithRows(this.masternotebook.notes)});
   }
 
   showNoteDialogue(){
     this.listView.scrollTo({x: 0, y: 0, animated: true})
+    this.setState({drawer:'newNote'})
     this._drawer.open()
-    console.log(this._drawer);
+    // console.log(this._drawer);
     console.log('openning drawer');
-    // this.setState({makeNote: true});
   }
 
-  closeNewNote(){
-    // this.listView.scrollTo({x: 0, y: 0, animated: true})
+  showSwipedex(){
+    this.listView.scrollTo({x: 0, y: 0, animated: true})
+    this.setState({drawer:'swipedex'})
+    this._drawer.open()
+    console.log('openning drawer');
+  }
+
+  closeDrawer(){
+    this.saveNotebook();
     this._drawer.close();
     console.log('closing drawer');
-    // this.setState({makeNote: true});
   }
 
   addNote(title, text) {
-    this.props.notebook.addNote(title, text);
-    this.setState({dataSource: ds.cloneWithRows(this.props.notebook.notes)});
+    this.masternotebook.addNote(title, text);
+    this.setState({dataSource: ds.cloneWithRows(this.masternotebook.notes)});
   }
 
 
@@ -99,9 +129,9 @@ export default class NotebookView extends Component {
         autoClose={true}
         backgroundColor= 'transparent'>
         <Note>
-          <Text style={styles.title}>{note.title}</Text>
+          <Text style={styles.title}>{note && note.title}</Text>
           <Br/>
-          <Text>{note.text}</Text>
+          <Text>{note && note.text}</Text>
         </Note>
     </Swipeout>
     );
@@ -113,12 +143,15 @@ export default class NotebookView extends Component {
 
   render() {
 
-    let searchStr = 'Search ' + this.props.notebook.name
+    let searchStr = 'Search ' + this.masternotebook.name
 
     return (
       <Drawer
         ref={(ref) => this._drawer = ref}
-        content={<NewNote close={this.closeNewNote.bind(this)} submit={this.addNote.bind(this)}/>}
+        content={
+          this.state.drawer === 'newNote' ? <NewNote close={this.closeDrawer.bind(this)} submit={this.addNote.bind(this)}/> :
+          <SwipeDex close={this.closeDrawer.bind(this)} notebook={this.props.notebook} />
+          }
         side='right'
         >
 
@@ -131,7 +164,7 @@ export default class NotebookView extends Component {
           <TouchableOpacity  onPress={() => {this.props.setPage('home')}}>
             <Icon name='ios-arrow-back-outline' style={styles.newNoteIcon}/>
           </TouchableOpacity>
-          <Text>{this.props.notebook.name}</Text>
+          <Text>{this.masternotebook.name}</Text>
           <TouchableOpacity onPress={() => {console.log('menu')}}>
             <Icon name='ios-menu-outline' style={styles.newNoteIcon} />
           </TouchableOpacity>
@@ -143,7 +176,7 @@ export default class NotebookView extends Component {
 
         <View style={{
           padding: 5,
-          height:30,
+          height:35,
           backgroundColor: 'transparent'
         }}>
           <View style={{
@@ -158,6 +191,7 @@ export default class NotebookView extends Component {
           <TextInput placeholder={searchStr}
             style={{
               flex:1,
+              // height:10,
               paddingLeft:5
             }}
             clearButtonMode='always'
@@ -169,7 +203,7 @@ export default class NotebookView extends Component {
             onChangeText={(text) => {
               this.listView.scrollTo({x: 0, y: 0, animated: true})
               this.setState({search: text});
-              this.setState({dataSource: ds.cloneWithRows(this.props.notebook.search(text))})
+              this.setState({dataSource: ds.cloneWithRows(this.masternotebook.search(text))})
             }}/>
           </View>
         </View>
@@ -197,7 +231,8 @@ export default class NotebookView extends Component {
         <Footer>
           <TouchableOpacity  onPress={() => {
             console.log('do flashcards');
-            this.props.setPage('swipedex');
+            this.showSwipedex();
+            // this.props.setPage('swipedex');
           }}>
             <Icon name="ios-photos-outline" style={styles.newNoteIcon}/>
           </TouchableOpacity>

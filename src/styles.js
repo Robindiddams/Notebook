@@ -1,7 +1,7 @@
 
-
+const btColor = '#007AFF'
 const styles = {
-  //button color '#007AFF'
+  buttonColor: btColor,
   headerHeight:60,
   footerHeight:50,
   title: {
@@ -31,8 +31,14 @@ const styles = {
     backgroundColor: 'transparent'
   },
   newNoteIcon: {
-    color: '#007AFF',
+    color: btColor,
     fontSize:28
+  },
+  bubbleButton: {
+    borderColor:btColor,
+    borderWidth: 2,
+    borderRadius: 6,
+    padding: 5
   }
 };
 
