@@ -28,11 +28,7 @@ export default class Note extends Component {
           paddingBottom: 8,
 
           padding:5,
-          shadowOffset: {
-            width: 0,
-            height: 3
-          },
-          shadowOpacity: 0.3
+
         }, this.props.style]}>
           <View style={{
 
@@ -43,7 +39,13 @@ export default class Note extends Component {
             backgroundColor:'#ffffff',
             // flexDirection: 'column',
             // justifyContent:'center',
-            alignItems:'center'
+            alignItems:'center',
+            shadowOffset: {
+              width: 0,
+              height: 3
+            },
+            shadowOpacity: 0.3
+
           }}>
             {this.props.children}
           </View>
