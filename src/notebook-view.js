@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, ScrollView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation, StyleSheet, Text, AsyncStorage } from 'react-native';
+import { ListView, ScrollView, TouchableOpacity, TextInput, View, Dimensions, LayoutAnimation, StyleSheet, Text, AsyncStorage, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Note from './card';
 import Notebook from './notebook';
@@ -73,12 +73,40 @@ export default class NotebookView extends Component {
 	}
 	componentWillUnmount () {
 		console.log('unmounting');
-		this.saveNotebook();
+		
+	}
+
+	deleteNotebook(name) {
+		Alert.alert(
+			'Are you sure you want to delete this notebook?',
+			`This will delete "${name}" and all notes and decks whithin\nThis cannot be undone, are you sure?`,
+			[
+				{text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+				{text: 'Yes', onPress: () => {
+
+					AsyncStorage.getItem('@Notebook:notebooks').then(notebooks => {
+						notebooks = JSON.parse(notebooks);
+						console.log(notebooks);
+						notebooks.splice(notebooks.indexOf(name), 1);
+						this.setState({dataSource: this.state.dataSource.cloneWithRows(notebooks)});
+						AsyncStorage.setItem('@Notebook:notebooks', JSON.stringify(notebooks)).then(() => {
+							console.log('deleted the notebooks record');
+							AsyncStorage.setItem(`@Notebook:notebook-${name}`, '').then(() => {
+								console.log(` deleted @Notebook:notebook-${name} it should be @Notebook:notebook-${this.props.notebook}`);
+								this.props.setPage('home');
+							});
+						});
+					}).catch(e => console.log(e));
+				}},
+			],
+			{ cancelable: false }
+		);
+		
 	}
 
 	saveNotebook() {
 		AsyncStorage.setItem(`@Notebook:notebook-${this.props.notebook}`, JSON.stringify(this.masternotebook.exportNotebook())).then(() => {
-			console.log('done');
+			console.log('notes saved');
 		});
 	}
 
@@ -155,6 +183,21 @@ export default class NotebookView extends Component {
 					this.state.drawer === 'newNote' ? <NewNote close={this.closeDrawer.bind(this)} submit={this.addNote.bind(this)}/> :
 					this.state.drawer === 'swipedex' ? <SwipeDex close={this.closeDrawer.bind(this)} notebook={this.props.notebook} /> :
 					<Menu title='Notebook Options' close={this.closeDrawer.bind(this)}>
+						<View style={[styles.li, { flexDirection: 'column', padding: 10}]}>
+							<Icon name='ios-information-circle-outline' style={styles.iconBigger}/>
+							<Text>
+								The note View is a list of all the notes you've taken in reverse chronological order. You can quickly search for a note with the search bar, and delete notes by swiping left on them and tapping 'delete'.
+								You can tap the bottom right to create a new Note. You can tap the bottom left to open the Deck view.
+							</Text>
+						</View>
+						<View style={[styles.li, {justifyContent: 'center', padding:10}]}>
+							<TouchableOpacity onPress={() => {
+								console.log('pressed');
+								this.deleteNotebook(this.masternotebook.name);
+								}}>
+								<Text style={{color:styles.deleteColor}}>Delete</Text>
+							</TouchableOpacity>
+						</View>
 					</Menu>
 					}
 				side='right'
@@ -165,7 +208,10 @@ export default class NotebookView extends Component {
 					2 buttons and a title
 			*/}
 				<Header>
-					<TouchableOpacity  onPress={() => {this.props.setPage('home')}}>
+					<TouchableOpacity  onPress={() => {
+						this.saveNotebook();
+						this.props.setPage('home');
+					}}>
 						<Icon name='ios-arrow-back-outline' style={styles.iconBigger}/>
 					</TouchableOpacity>
 					<Text style={[styles.headerTitle, {paddingLeft:10}]}>{this.masternotebook.name}</Text>

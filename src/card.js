@@ -5,53 +5,52 @@ import AutoExpandingTextInput from 'react-native-auto-expanding-textinput';
 import Br from './break';
 
 export default class Note extends Component {
-  constructor(props) {
-    super(props)
+	constructor(props) {
+		super(props)
 
-    this.state = {
-      titleText: 'new note',
-      bodyText: ''
-    }
-  }
-
-
-  _onChangeHeight(before, after) {
-    console.log('before: ' + before + ' after: ' + after);
-  }
+		this.state = {
+			titleText: 'new note',
+			bodyText: ''
+		}
+	}
 
 
-  render() {
-      return(
-        <View style={[{
-          backgroundColor: 'transparent',
-          paddingTop: 4,
-          paddingBottom: 8,
+	_onChangeHeight(before, after) {
+		console.log('before: ' + before + ' after: ' + after);
+	}
 
-          padding:5,
 
-        }, this.props.style]}>
-          <View style={{
+	render() {
+			return(
+				<View style={[{
+					backgroundColor: 'transparent',
+					paddingTop: 4,
+					paddingBottom: 8,
+					padding:5,
 
-            flex: 1,
-            padding: 10,
-            paddingLeft: 10,
-            paddingRight: 10,
-            backgroundColor:'#ffffff',
-            // flexDirection: 'column',
-            // justifyContent:'center',
-            alignItems:'center',
-            shadowOffset: {
-              width: 0,
-              height: 3
-            },
-            shadowOpacity: 0.3
+				}, this.props.style]}>
+					<View style={{
 
-          }}>
-            {this.props.children}
-          </View>
-        </View>
-      );
-    }
+						flex: 1,
+						padding: 10,
+						paddingLeft: 10,
+						paddingRight: 10,
+						backgroundColor:'#ffffff',
+						// flexDirection: 'column',
+						// justifyContent:'center',
+						alignItems:'center',
+						shadowOffset: {
+							width: 0,
+							height: 3
+						},
+						shadowOpacity: 0.3
+
+					}}>
+						{this.props.children}
+					</View>
+				</View>
+			);
+		}
 
 }
 
